@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: stock-trading-server
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=stocktrading}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: stocktrading
+        format_sql: true
+        hbm2ddl:
+          create_namespaces: true   # creates the schema if it doesn't exist
+
+grpc:
+  server:
+    port: 9090
+    enable-reflection : true  # for testing application with postman
