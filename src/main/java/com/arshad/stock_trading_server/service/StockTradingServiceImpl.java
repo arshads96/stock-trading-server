@@ -11,6 +11,10 @@ import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 
+import java.time.Instant;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 @GrpcService
 @AllArgsConstructor
 public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradingServiceImplBase {
@@ -35,5 +39,25 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void subscribeStockPrice(StockRequest request, StreamObserver<StockResponse> responseObserver) {
+        String symbol = request.getStockSymbol();
+
+        try {
+            for (int i = 0; i <= 10; i++) {
+                StockResponse response = StockResponse.newBuilder()
+                        .setStockSymbol(symbol)
+                        .setStockPrice(new Random().nextDouble(200))
+                        .setTimestamp(Instant.now().toString())
+                        .build();
+                responseObserver.onNext(response);
+                TimeUnit.SECONDS.sleep(1);
+            }
+            responseObserver.onCompleted();
+        } catch (InterruptedException e) {
+            responseObserver.onError(e);
+        }
     }
 }
